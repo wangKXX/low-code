@@ -18,6 +18,7 @@
       :globalPageData="globalPageData"
       :id="mateData.componentId"
       :style="styleSheets"
+      :class="mateData.type === 'LAYOUT' ? mateData.sheets?.className : ''"
     >
     </component>
     <div class="active-menu" v-if="isCurrent">
@@ -71,7 +72,7 @@ interface IComponentWrapper {
 interface IEventMap {
   [propName: string]: () => any
 }
-const { componentName, editeAble, mateData, parentMateData, globalPageData, preview } =
+const { componentName, mateData, parentMateData, globalPageData, preview } =
   defineProps<IComponentWrapper>()
 const { setCurrentComponentId } = useCurrentComponent()
 const { currentComponentId } = storeToRefs<ReturnType<typeof useCurrentComponent>>(

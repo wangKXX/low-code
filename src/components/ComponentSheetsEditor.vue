@@ -17,24 +17,28 @@
         </div>
       </template>
       <el-row :gutter="24">
-        <el-col :span="7">水平对齐</el-col>
-        <el-col :span="17"
-          ><el-radio-group size="small">
-            <el-radio-button name="New York" />
-            <el-radio-button name="Washington" />
-            <el-radio-button name="Los Angeles" />
-            <el-radio-button name="Chicago" /> </el-radio-group
-        ></el-col>
+        <el-col :span="6">水平</el-col>
+        <el-col :span="18"
+          ><el-radio-group size="small" @change="handleRadioChange" v-model="justify">
+            <el-radio-button label="flex justify-start">左对齐</el-radio-button>
+            <el-radio-button label="flex justify-end">右对齐</el-radio-button>
+            <el-radio-button label="flex justify-center">居中</el-radio-button>
+            <el-radio-button label="flex justify-evenly">等分</el-radio-button>
+            <el-radio-button label="flex justify-between">两端</el-radio-button></el-radio-group
+          ></el-col
+        >
       </el-row>
-      <el-row :gutter="24" >
-        <el-col :span="7">垂直对齐</el-col>
-        <el-col :span="17"
-          ><el-radio-group size="small" @change="handleRadioChange" v-model="value1">
-            <el-radio-button name="New York" label="flex items-center"/>
-            <el-radio-button name="Washington" />
-            <el-radio-button name="Los Angeles" />
-            <el-radio-button name="Chicago" /> </el-radio-group
-        ></el-col>
+      <el-row :gutter="24">
+        <el-col :span="6">垂直</el-col>
+        <el-col :span="18"
+          ><el-radio-group size="small" @change="handleRadioChange" v-model="items">
+            <el-radio-button label="flex items-center">居中</el-radio-button>
+            <el-radio-button label="flex items-start">上对齐</el-radio-button>
+            <el-radio-button label="flex items-end">下对齐</el-radio-button>
+            <el-radio-button label="flex items-baselinet">基线对齐</el-radio-button>
+            <el-radio-button label="flex items-stretch">铺满</el-radio-button>
+          </el-radio-group></el-col
+        >
       </el-row>
     </el-card>
   </div>
@@ -52,11 +56,12 @@ import 'codemirror/mode/css/css.js'
 import 'codemirror/theme/dracula.css'
 import type { IComponent } from '@/stores'
 
-const value1 = ref('')
 const emit = defineEmits<{
   code: [code: string]
 }>()
 const { component } = defineProps<{ component: IComponent }>()
+const justify = ref('')
+const items = ref('')
 const code = ref(`{
 
 }
@@ -82,8 +87,13 @@ onMounted(async () => {
 })
 
 const handleRadioChange = (args: any) => {
-  console.log(args)
-  component.sheets ||= {inlineSheets: '', className: ''}
-  component.sheets.className = args;
+  component.sheets ||= { inlineSheets: '', className: '' }
+  component.sheets.className = `${justify.value} ${items.value.replace('flex', '')}`
 }
 </script>
+<style lang="less" scoped>
+:deep(.el-card__header) {
+  padding: 10px;
+  background-color: #e4e7ed;
+}
+</style>

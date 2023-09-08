@@ -16,6 +16,12 @@ export interface ISheets {
   className: string
 }
 
+export interface IEvent {
+  eventType: string
+  defaultValue: string
+  description: string
+}
+
 export interface IComponent {
   componentName: string
   package: string
@@ -27,6 +33,7 @@ export interface IComponent {
   componentId?: string
   schema: ISchema
   sheets?: ISheets
+  events?: IEvent[]
   children: Array<IComponent>
 }
 
@@ -70,6 +77,9 @@ export const useComponents = defineStore('components', () => {
           title: '请求类型'
         }
       },
+      events: [
+        { eventType: 'click', defaultValue: `() => {}`, description: '点击时触发'}
+      ],
       sheets: {
         inlineSheets: '',
         className: ''
@@ -83,6 +93,9 @@ export const useComponents = defineStore('components', () => {
       type: 'BASE',
       showName: '按钮',
       icon: 'Watch',
+      events: [
+        { eventType: 'click', defaultValue: `() => {}`, description: '点击时触发'}
+      ],
       sheets: {
         inlineSheets: '',
         className: ''

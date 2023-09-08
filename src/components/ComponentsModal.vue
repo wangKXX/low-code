@@ -47,6 +47,7 @@ const dragstart = (event: DragEvent, component: Omit<IComponent, 'children'>) =>
 const dragend = () => {
   drawer.value = true
 }
+
 defineExpose({
   openDrawer
 })

@@ -56,18 +56,18 @@ const handlerRemove = (index: number) => {
     padding: 4px;
     margin-bottom: 4px;
     position: relative;
+    :deep(.el-icon) {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      cursor: pointer;
+      &:hover {
+        color: #36f;
+      }
+    }
   }
   :deep(.el-button) {
     width: 100%;
-  }
-  :deep(.el-icon) {
-    position: absolute;
-    top: 4px;
-    right: 4px;
-    cursor: pointer;
-    &:hover {
-      color: #36f;
-    }
   }
 }
 </style>
