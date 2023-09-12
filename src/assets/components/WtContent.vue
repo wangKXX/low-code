@@ -39,7 +39,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { isRef, ref } from 'vue'
 import type { IComponent } from '@/stores'
 import { v4 as uuidv4 } from 'uuid'
 import type { IChangeComponent } from '@/components/types'
@@ -50,7 +50,6 @@ const { mateData, globalPageData, preview } = defineProps<{
   globalPageData: IComponent
   preview?: boolean
 }>()
-
 const componentIndex = ref<number>(-2)
 const clearSelectComponentSheet = ref<() => void>()
 let globalPageMateData = globalPageData

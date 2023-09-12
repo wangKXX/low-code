@@ -11,6 +11,7 @@
     @dragstart.stop="dragstart($event)"
     @dragenter.prevent
   >
+    {{ mateData }}
     <component
       :is="componentName"
       v-bind="propsValue"
@@ -18,6 +19,8 @@
       :globalPageData="globalPageData"
       :id="mateData.componentId"
       :style="styleSheets"
+      ref="componentInstance"
+      :preview="preview"
       :class="mateData.type === 'LAYOUT' ? mateData.sheets?.className : ''"
     >
     </component>
@@ -37,7 +40,7 @@
       /></el-icon>
     </div>
   </div>
-  <div :class="`component-wrapper ${mateData.sheets?.className}`" v-else>
+  <div :class="`${mateData.sheets?.className}`" v-else>
     <component
       :is="componentName"
       v-bind="propsValue"
@@ -45,6 +48,7 @@
       :preview="preview"
       :style="styleSheets"
       :class="mateData.sheets?.className"
+      ref="componentInstance"
     >
     </component>
   </div>
@@ -52,11 +56,12 @@
 >
 
 <script lang="ts" setup>
+declare var window: any
 import { useCurrentComponent } from '@/stores'
 import type { IComponent, ISchema } from '@/stores'
 import { Bottom } from '@element-plus/icons-vue'
 import { storeToRefs } from 'pinia'
-import { computed, ref } from 'vue'
+import { computed, ref, onMounted, toRef, watch } from 'vue'
 import { EPositon } from './types'
 import type { IChangeComponent } from './types'
 import { findComponentIndex, parseCssCode } from '@/utils/common'
@@ -72,9 +77,19 @@ interface IComponentWrapper {
 interface IEventMap {
   [propName: string]: () => any
 }
+const componentInstance = ref<any>()
+window.globalRefs ||= {}
+
 const { componentName, mateData, parentMateData, globalPageData, preview } =
   defineProps<IComponentWrapper>()
 const { setCurrentComponentId } = useCurrentComponent()
+onMounted(() => {
+  window.globalRefs[mateData.componentId || ''] = componentInstance
+  console.debug(
+    window.globalRefs[mateData.componentId || ''].value.show,
+    componentInstance.value?.show
+  )
+})
 const { currentComponentId } = storeToRefs<ReturnType<typeof useCurrentComponent>>(
   useCurrentComponent()
 )
@@ -106,13 +121,26 @@ const isCurrent = computed(() => currentComponentId.value === mateData.component
 const isTopComponent = computed(() => {
   return findComponentIndex(currentComponentId.value, parentMateData)
 })
-
-const propsValue = computed(() => {
-  return Object.keys(mateData.schema).reduce((prev: any, k: string) => {
-    prev[k] = (mateData.schema[k] as ISchema)?.value
-    return prev
-  }, {} as IComponent)
+const propsValue = ref({});
+watch([mateData.schema, mateData.events], () => {
+  console.log(888)
+  const { schema, events } = mateData || {}
+  const props = Object.keys(schema).reduce((prev: any, k: string) => {
+      prev[k] = (schema[k] as ISchema)?.value
+      return prev
+    }, {} as IComponent)
+  propsValue.value = Object.assign(props, { events })
+}, {
+  deep: true
 })
+// const propsValue = computed(() => {
+//   const { schema, events } = mateData || {}
+//   const props = Object.keys(schema).reduce((prev: any, k: string) => {
+//       prev[k] = (schema[k] as ISchema)?.value
+//       return prev
+//     }, {} as IComponent)
+//   return Object.assign(props, { events })
+// })
 
 const styleSheets = computed(() => {
   const sheetsStr = mateData.sheets?.inlineSheets

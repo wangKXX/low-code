@@ -10,6 +10,11 @@ const router = createRouter({
       component: () => import('../views/Previe.vue')
     },
     {
+      path: '/engine',
+      name: 'engine',
+      component: () => import('../views/LowcodeEngine.vue')
+    },
+    {
       path: '/',
       name: 'home',
       component: HomeView

@@ -1,4 +1,5 @@
 import WtButton from './WtButton.vue'
 import WtTable from './WtTable.vue'
-import WContent from './WContent.vue'
-export { WtButton, WtTable, WContent }
+import WtContent from './WtContent.vue'
+import WtDialog from './WtDialog.vue'
+export { WtButton, WtTable, WtContent, WtDialog }

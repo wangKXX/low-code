@@ -9,10 +9,15 @@
         <ComponentEventEditor :component="current"></ComponentEventEditor>
       </el-collapse-item>
       <el-collapse-item title="样式" name="3">
-        <ComponentSheetsEditer
-          @code="saveSheetsCode"
-          :component="current"
-        ></ComponentSheetsEditer>
+        <ComponentSheetsEditer @code="saveSheetsCode" :component="current"></ComponentSheetsEditer>
+      </el-collapse-item>
+      <el-collapse-item title="高级" name="4">
+        <el-row :gutter="24" style="margin-bottom: 8px">
+          <el-col :span="4"><div class="props-item-label">refId</div></el-col>
+          <el-col :span="20">
+          <el-input v-model="currentComponentId" disabled=""></el-input>
+          </el-col
+        ></el-row>
       </el-collapse-item>
     </el-collapse>
   </div>
@@ -28,7 +33,7 @@ import ComponentSheetsEditer from './ComponentSheetsEditor.vue'
 import ComponentPropsEidtor from './ComponentPropsEidtor.vue'
 import ComponentEventEditor from './ComponentEventEditor.vue'
 
-const activeNames = ref(['1', '2', '3'])
+const activeNames = ref(['1', '2', '3', '4'])
 const { currentComponentId, pageComponents } = storeToRefs<ReturnType<typeof useCurrentComponent>>(
   useCurrentComponent()
 )
@@ -61,5 +66,9 @@ const saveSheetsCode = (code: string): void => {
   text-align: center;
   padding: 8px;
   color: #a7b1bd;
+}
+.props-item-label {
+  color: #a7b1bd;
+  line-height: 32px;
 }
 </style>

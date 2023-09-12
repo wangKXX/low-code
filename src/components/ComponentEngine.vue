@@ -1,10 +1,10 @@
 <template>
   <div class="engine-container">
-    <w-content
+    <wt-content
       :mateData="currentComponent.pageComponents"
       :globalPageData="currentComponent.pageComponents"
       v-bind="props"
-    ></w-content>
+    ></wt-content>
   </div>
 </template>
 
@@ -24,5 +24,6 @@ const currentComponent = useCurrentComponent()
   overflow-y: auto;
   background-color: #fff;
   padding: 20px;
+  position: relative;
 }
 </style>

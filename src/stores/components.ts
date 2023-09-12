@@ -18,8 +18,9 @@ export interface ISheets {
 
 export interface IEvent {
   eventType: string
-  defaultValue: string
+  defaultValue?: string
   description: string
+  ES5Value?: string
 }
 
 export interface IComponent {
@@ -78,7 +79,7 @@ export const useComponents = defineStore('components', () => {
         }
       },
       events: [
-        { eventType: 'click', defaultValue: `() => {}`, description: '点击时触发'}
+        { eventType: 'onClick', defaultValue: ``, description: '点击时触发', ES5Value: ''}
       ],
       sheets: {
         inlineSheets: '',
@@ -94,7 +95,7 @@ export const useComponents = defineStore('components', () => {
       showName: '按钮',
       icon: 'Watch',
       events: [
-        { eventType: 'click', defaultValue: `() => {}`, description: '点击时触发'}
+        { eventType: 'onClick', defaultValue: ``, description: '点击时触发', ES5Value: ''}
       ],
       sheets: {
         inlineSheets: '',
@@ -126,10 +127,10 @@ export const useComponents = defineStore('components', () => {
       }
     },
     {
-      componentName: 'WContent',
-      package: 'element-plus/lib/WContent',
+      componentName: 'WtContent',
+      package: 'element-plus/lib/WtContent',
       version: '1.0.0',
-      exportName: 'WContent',
+      exportName: 'WtContent',
       type: 'LAYOUT',
       showName: '布局',
       icon: 'Memo',
@@ -138,10 +139,48 @@ export const useComponents = defineStore('components', () => {
         inlineSheets: '',
         className: ''
       }
+    },
+    {
+      componentName: 'WtDialog',
+      package: 'element-plus/lib/WtDialog',
+      version: '1.0.0',
+      exportName: 'WtDialog',
+      type: 'LAYOUT',
+      showName: '弹框',
+      icon: 'Memo',
+      schema: {
+        confirmTxt: {
+          type: 'INPUT',
+          title: '确认文案',
+          value: 'Confirm'
+        },
+        cancelTxt: {
+          type: 'INPUT',
+          title: '取消文案',
+          value: 'Cancel'
+        },
+        title: {
+          type: 'INPUT',
+          title: '标题',
+          value: 'Tips'
+        },
+        width: {
+          type: 'INPUT',
+          title: '宽度',
+          value: '30%'
+        },
+      },
+      sheets: {
+        inlineSheets: '',
+        className: ''
+      },
+      events: [
+        { eventType: 'beforeClose', description: '关闭前触发'}
+      ],
     }
   ]
   const reactiveComponents = reactive<Omit<IComponent, 'children'>[]>(components)
   return {
     components: reactiveComponents
   }
-})
+}, { persist: true })
