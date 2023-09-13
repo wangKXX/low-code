@@ -39,9 +39,12 @@ declare module 'vue' {
     ElSelect: typeof import('element-plus/es')['ElSelect']
     ElTable: typeof import('element-plus/es')['ElTable']
     ElTableColumn: typeof import('element-plus/es')['ElTableColumn']
+    ElTooltip: typeof import('element-plus/es')['ElTooltip']
+    ElTree: typeof import('element-plus/es')['ElTree']
     Icon: typeof import('./src/components/Icon.vue')['default']
     PropsSettingList: typeof import('./src/components/PropsSettingList.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SchemaModal: typeof import('./src/components/SchemaModal.vue')['default']
   }
 }

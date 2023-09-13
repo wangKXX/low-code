@@ -4,14 +4,14 @@
       <el-header>
         <el-button @click="handleClick" type="primary">预览</el-button>
       </el-header>
-      <el-container style="height: calc(100% - 60px);">
-        <el-aside width="60px" style="position: relative; z-index: 1000000">
-          <ComponentsMain></ComponentsMain>
+      <el-container style="height: calc(100% - 60px); position: relative">
+        <el-aside width="60px">
+          <ComponentsMain ref="componentsMainRef"></ComponentsMain>
         </el-aside>
         <el-main>
           <iframe src="/engine"></iframe>
         </el-main>
-        <el-aside style="position: relative; z-index: 1000000">
+        <el-aside>
           <ComponentPropsSetting></ComponentPropsSetting>
         </el-aside>
       </el-container>
@@ -23,9 +23,17 @@
 import ComponentsMain from './ComponentsMain.vue'
 import ComponentPropsSetting from './ComponentPropsSetting.vue'
 import router from '@/router'
+import { ref, provide, onMounted } from 'vue'
+declare let window: any
+
+const componentsMainRef = ref<InstanceType<typeof ComponentsMain>>()
+provide('ModalInstance', componentsMainRef)
 const handleClick = () => {
   router.push({ name: 'preview' })
 }
+onMounted(() => {
+  window.componentsMainRef = componentsMainRef
+})
 </script>
 <style lang="less" scoped>
 .lowcode-container {

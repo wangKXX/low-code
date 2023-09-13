@@ -1,44 +1,53 @@
 import { defineStore } from 'pinia'
-import { ref, computed, toRefs } from 'vue'
+import { ref } from 'vue'
 import type { IComponent } from '@/stores'
-import { findComponent } from '@/utils/common'
 import { v4 as uuidv4 } from 'uuid'
 
 export const useCurrentComponent = defineStore(
   'useCurrentComponent',
   () => {
+    const pageId = uuidv4()
     // 当前选中组件Id
-    const currentComponentId = ref<string>('')
-    // 当前页面schema
+    const currentComponentId = ref<string>(pageId)
     const pageComponents = ref<IComponent>({
       componentName: 'Page',
       package: '',
       version: '',
       exportName: '',
-      showName: '',
+      showName: '页面',
       icon: '',
-      componentId: uuidv4(),
+      componentId: pageId,
       schema: {},
+      sheets: {
+        inlineSheets: '',
+        className: ''
+      },
+      events: [
+        { eventType: 'onload', description: '加载完成触发'}
+      ],
       children: [],
-      type: ''
+      type: 'PAGE'
     })
     const setCurrentComponentId = (id: string) => {
       currentComponentId.value = id
     }
 
-    // 当前组件
-    const currentComponent = computed(() => {
-      return findComponent(currentComponentId.value, pageComponents.value.children as IComponent[])
-    })
-
     return {
-      pageComponents: pageComponents.value,
+      pageComponents: pageComponents,
       currentComponentId,
       setCurrentComponentId,
-      currentComponent: currentComponent
     }
   },
   {
-    persist: true
+    persist: {
+      serializer: {
+        serialize: (value: any) => {
+          return JSON.stringify(value)
+        },
+        deserialize: (store: string) => {
+          return JSON.parse(store)
+        }
+      }
+    }
   }
 )

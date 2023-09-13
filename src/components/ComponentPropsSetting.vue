@@ -1,8 +1,8 @@
 <template>
   <div v-if="!currentComponentId" class="props-setting-tips">请在左侧画布选中节点</div>
-  <div class="props-setting" v-else :key="currentComponentId">
+  <div class="props-setting" v-else :key="currentComponentId" @click="handlerClick">
     <el-collapse v-model="activeNames">
-      <el-collapse-item title="属性" name="1">
+      <el-collapse-item title="属性" name="1" v-if="Object.keys(current.schema).length">
         <ComponentPropsEidtor :schemaCurrent="current.schema || {}"></ComponentPropsEidtor>
       </el-collapse-item>
       <el-collapse-item title="事件" name="2" v-if="current.events">
@@ -24,7 +24,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, inject, ref } from 'vue'
 import { useCurrentComponent } from '@/stores'
 import { storeToRefs } from 'pinia'
 import { findComponent } from '@/utils/common'
@@ -38,11 +38,15 @@ const { currentComponentId, pageComponents } = storeToRefs<ReturnType<typeof use
   useCurrentComponent()
 )
 const current = computed<any>(
-  () => findComponent(currentComponentId.value, pageComponents.value.children as IComponent[]) || {}
+  () => findComponent(currentComponentId.value, [pageComponents.value] as IComponent[]) || {}
 )
 
 const saveSheetsCode = (code: string): void => {
   current.value.sheets.inlineSheets = code
+}
+const ModalInstance = inject<any>('ModalInstance')
+const handlerClick = () =>{
+  ModalInstance?.value?.closeAllModal()
 }
 </script>
 

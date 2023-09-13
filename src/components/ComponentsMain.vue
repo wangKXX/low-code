@@ -3,32 +3,63 @@
     <div class="menus" :ref="rootDom">
       <div
         class="menu-item"
-        v-for="({ componentName, event }, index) in menus"
+        v-for="({ componentName, event, tips }, index) in menus"
         :key="`menu-item-${index}`"
       >
-        <el-icon :size="20" @click="event">
-          <component :is="componentName"></component>
-        </el-icon>
+        <el-tooltip effect="dark" :content="tips" placement="right">
+          <el-icon :size="20" @click="event">
+            <component :is="componentName"></component>
+          </el-icon>
+        </el-tooltip>
       </div>
     </div>
     <ComponentsModal ref="componentModalRef" :root="rootDom"></ComponentsModal>
+    <SchemaModal ref="schemaModalRef" :root="rootDom"></SchemaModal>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue'
 import ComponentsModal from './ComponentsModal.vue'
-const componentModalRef = ref<InstanceType<typeof ComponentsModal>>()
+import SchemaModal from './SchemaModal.vue'
+type TComponentsModalRef = InstanceType<typeof ComponentsModal>
+type TSchemaModalRef = InstanceType<typeof SchemaModal>
+const componentModalRef = ref<TComponentsModalRef>()
+const schemaModalRef = ref<TSchemaModalRef>()
 const rootDom = ref()
+const closeOthers = (refInstance: any) => {
+  [componentModalRef, schemaModalRef]
+    .filter((instance: any) => refInstance !== instance)
+    .forEach((instance: any) => {
+      instance.value?.hide()
+    })
+}
+const closeAllModal = () => {
+  closeOthers('')
+}
 const handlerComponentModalOpen = () => {
-  componentModalRef.value?.openDrawer()
+  closeOthers(componentModalRef)
+  componentModalRef.value?.tiggerDrawer()
+}
+const schemaModaTigger = () => {
+  closeOthers(schemaModalRef)
+  schemaModalRef.value?.tiggerDrawer()
 }
 const menus = [
   {
-    componentName: 'Menu',
-    event: handlerComponentModalOpen
+    componentName: 'SetUp',
+    event: handlerComponentModalOpen,
+    tips: '组件库'
+  },
+  {
+    componentName: 'Tickets',
+    tips: '大纲树',
+    event: schemaModaTigger
   }
 ]
+defineExpose({
+  closeAllModal
+})
 </script>
 
 <style lang="less" scoped>
@@ -44,6 +75,13 @@ const menus = [
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    .menu-item {
+      width: 46px;
+      height: 46px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
   }
 }
 </style>

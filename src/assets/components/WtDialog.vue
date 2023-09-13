@@ -1,5 +1,7 @@
 <template>
-  <el-dialog v-model="dialogVisible" :title="title" :width="width" :before-close="beforeClose"  :key="renderKey">
+  <el-button type="primary" size="default" @click="dialogVisible = true" v-if="!props.preview">模态框</el-button>
+
+  <el-dialog v-model="dialogVisible" :title="title" :width="width" :before-close="beforeClose">
     <WContent
       :preview="props.preview"
       :mate-data="props.mateData"
@@ -15,7 +17,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from 'vue'
+import { ref, toRefs } from 'vue'
 import WContent from './WtContent.vue'
 import type { IComponent, IEvent } from '@/stores'
 import { dispatchEvent } from '@/utils/functionHeler';
@@ -29,16 +31,9 @@ interface IWDialog {
   globalPageData: IComponent
   events: IEvent[]
 }
-const props = defineProps<IWDialog>()
-const renderKey = ref<number>(Math.random())
-console.log(props)
-const { confirmTxt = 'Confirm', cancelTxt = 'Cancel', title = 'Tips', width = '30%' } = props
+const props = defineProps<IWDialog>() 
+const { confirmTxt = 'Confirm', cancelTxt = 'Cancel', title = 'Tips', width = '30%' } = toRefs(props)
 const dialogVisible = ref<boolean>(props.preview ? false : true)
-watch(props, () => {
-  renderKey.value = Math.random()
-}, {
-  flush: 'post'
-})
 const show = () => {
   dialogVisible.value = true
 }

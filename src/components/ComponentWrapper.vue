@@ -11,7 +11,6 @@
     @dragstart.stop="dragstart($event)"
     @dragenter.prevent
   >
-    {{ mateData }}
     <component
       :is="componentName"
       v-bind="propsValue"
@@ -61,10 +60,11 @@ import { useCurrentComponent } from '@/stores'
 import type { IComponent, ISchema } from '@/stores'
 import { Bottom } from '@element-plus/icons-vue'
 import { storeToRefs } from 'pinia'
-import { computed, ref, onMounted, toRef, watch } from 'vue'
+import { computed, ref, onMounted, toRefs } from 'vue'
 import { EPositon } from './types'
 import type { IChangeComponent } from './types'
 import { findComponentIndex, parseCssCode } from '@/utils/common'
+
 
 interface IComponentWrapper {
   componentName: string
@@ -79,14 +79,14 @@ interface IEventMap {
 }
 const componentInstance = ref<any>()
 window.globalRefs ||= {}
-
-const { componentName, mateData, parentMateData, globalPageData, preview } =
+const props =
   defineProps<IComponentWrapper>()
+const { componentName, mateData, parentMateData, globalPageData, preview } = toRefs(props)
 const { setCurrentComponentId } = useCurrentComponent()
 onMounted(() => {
-  window.globalRefs[mateData.componentId || ''] = componentInstance
+  window.globalRefs[mateData.value.componentId || ''] = componentInstance
   console.debug(
-    window.globalRefs[mateData.componentId || ''].value.show,
+    window.globalRefs[mateData.value.componentId || ''].value.show,
     componentInstance.value?.show
   )
 })
@@ -95,16 +95,17 @@ const { currentComponentId } = storeToRefs<ReturnType<typeof useCurrentComponent
 )
 
 const handleClickTop = () => {
-  const index = findComponentIndex(currentComponentId.value, parentMateData)
-  parentMateData.splice(index - 1, 0, parentMateData.splice(index, 1)[0] as IComponent)
+  const index = findComponentIndex(currentComponentId.value, parentMateData.value)
+  parentMateData.value.splice(index - 1, 0, parentMateData.value.splice(index, 1)[0] as IComponent)
 }
 const handleClickBottom = () => {
-  const index = findComponentIndex(currentComponentId.value, parentMateData)
-  parentMateData.splice(index + 1, 0, parentMateData.splice(index, 1)[0] as IComponent)
+  const index = findComponentIndex(currentComponentId.value, parentMateData.value)
+  parentMateData.value.splice(index + 1, 0, parentMateData.value.splice(index, 1)[0] as IComponent)
 }
 const handleClickDelete = () => {
-  const index = findComponentIndex(currentComponentId.value, parentMateData)
-  parentMateData.splice(index, 1)
+  const index = findComponentIndex(currentComponentId.value, parentMateData.value)
+  parentMateData.value.splice(index, 1)
+  setCurrentComponentId('')
 }
 
 const handlerMenuClick = (type: string) => {
@@ -115,40 +116,27 @@ const handlerMenuClick = (type: string) => {
   }
   eventMap[type]()
 }
-
-const isCurrent = computed(() => currentComponentId.value === mateData.componentId)
+const isCurrent = computed(() => currentComponentId.value === mateData.value.componentId)
 
 const isTopComponent = computed(() => {
-  return findComponentIndex(currentComponentId.value, parentMateData)
+  return findComponentIndex(currentComponentId.value, parentMateData.value)
 })
-const propsValue = ref({});
-watch([mateData.schema, mateData.events], () => {
-  console.log(888)
-  const { schema, events } = mateData || {}
+const propsValue = computed(() => {
+  const { schema, events } = mateData.value || {}
   const props = Object.keys(schema).reduce((prev: any, k: string) => {
-      prev[k] = (schema[k] as ISchema)?.value
-      return prev
-    }, {} as IComponent)
-  propsValue.value = Object.assign(props, { events })
-}, {
-  deep: true
+    prev[k] = (schema[k] as ISchema)?.value
+    return prev
+  }, {} as IComponent)
+  return Object.assign(props, { events })
 })
-// const propsValue = computed(() => {
-//   const { schema, events } = mateData || {}
-//   const props = Object.keys(schema).reduce((prev: any, k: string) => {
-//       prev[k] = (schema[k] as ISchema)?.value
-//       return prev
-//     }, {} as IComponent)
-//   return Object.assign(props, { events })
-// })
 
 const styleSheets = computed(() => {
-  const sheetsStr = mateData.sheets?.inlineSheets
+  const sheetsStr = mateData.value.sheets?.inlineSheets
   return parseCssCode(sheetsStr)
 })
 
 const isBottomComponent = computed(() => {
-  return findComponentIndex(currentComponentId.value, parentMateData) !== parentMateData.length - 1
+  return findComponentIndex(currentComponentId.value, parentMateData.value) !== parentMateData.value.length - 1
 })
 
 const className = ref<string>('')
@@ -158,8 +146,8 @@ const clear = () => {
 }
 
 const handleClick = () => {
-  console.log(mateData.componentId, 'click')
-  setCurrentComponentId(mateData.componentId || '')
+  window.parent?.componentsMainRef?.value?.closeAllModal()
+  setCurrentComponentId(mateData.value.componentId || '')
 }
 
 const handleLeave = clear
@@ -173,20 +161,20 @@ const handleDragover = (event: any) => {
   if (offsetY >= clientHeight / 2 - 5) {
     className.value = EPositon.BOTTOM
     emit('componentIndex', {
-      componentId: mateData.componentId,
+      componentId: mateData.value.componentId,
       position: EPositon.BOTTOM,
       clear,
-      parentMateData,
-      globalPageData
+      parentMateData: parentMateData.value,
+      globalPageData: globalPageData.value
     })
   } else {
     className.value = EPositon.TOP
     emit('componentIndex', {
-      componentId: mateData.componentId,
+      componentId: mateData.value.componentId,
       position: EPositon.TOP,
       clear,
-      parentMateData,
-      globalPageData
+      parentMateData: parentMateData.value,
+      globalPageData: globalPageData.value
     })
   }
 }

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { reactive } from 'vue'
+import { reactive, ref } from 'vue'
 
 export interface ISchemaItem {
   type: string
@@ -179,8 +179,8 @@ export const useComponents = defineStore('components', () => {
       ],
     }
   ]
-  const reactiveComponents = reactive<Omit<IComponent, 'children'>[]>(components)
+  const reactiveComponents = ref<Omit<IComponent, 'children'>[]>(components)
   return {
-    components: reactiveComponents
+    components: reactiveComponents.value
   }
 }, { persist: true })

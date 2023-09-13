@@ -39,33 +39,34 @@
 </template>
 
 <script setup lang="ts">
-import { isRef, ref } from 'vue'
+import { ref, toRefs } from 'vue'
 import type { IComponent } from '@/stores'
 import { v4 as uuidv4 } from 'uuid'
 import type { IChangeComponent } from '@/components/types'
 import { findComponentIndex, getRepalceIndex, globalRemoveComponentById } from '@/utils/common'
 
-const { mateData, globalPageData, preview } = defineProps<{
+const props = defineProps<{
   mateData: IComponent
   globalPageData: IComponent
   preview?: boolean
 }>()
+const { mateData, globalPageData, preview } = toRefs(props)
 const componentIndex = ref<number>(-2)
 const clearSelectComponentSheet = ref<() => void>()
 let globalPageMateData = globalPageData
-let moveComponentParentMateData = mateData.children
+let moveComponentParentMateData = mateData.value.children
 
 const isInArrayMiddle = () => {
   return componentIndex.value >= 0 && moveComponentParentMateData.length > componentIndex.value
 }
 const handleDrop = (event: DragEvent): void => {
-  mateData.children ||= []
-  moveComponentParentMateData ||= mateData.children
+  mateData.value.children ||= []
+  moveComponentParentMateData ||= mateData.value.children
   const componentMateDataStr: string = event.dataTransfer?.getData('componentMateData') || ''
   try {
     const componentMateData: IComponent = JSON.parse(componentMateDataStr)
     const { componentId } = componentMateData
-    componentId && globalRemoveComponentById(componentId, globalPageMateData?.children || [])
+    componentId && globalRemoveComponentById(componentId, globalPageMateData.value?.children || [])
     Object.assign(componentMateData, { componentId: uuidv4() })
     if (isInArrayMiddle()) {
       moveComponentParentMateData.splice(componentIndex.value, 0, componentMateData as any)
@@ -82,7 +83,7 @@ const handleDrop = (event: DragEvent): void => {
 const changeComponent = (payload: IChangeComponent) => {
   const { componentId = '', position, clear, parentMateData, globalPageData } = payload
   moveComponentParentMateData = parentMateData
-  globalPageMateData = globalPageData
+  globalPageMateData.value = globalPageData
   componentIndex.value = getRepalceIndex(
     findComponentIndex(componentId, parentMateData || []),
     position
