@@ -1,10 +1,10 @@
 <template>
   <template v-for="(key, index) in Object.keys(schemaCurrent)" :key="`props-setting-${index}`">
     <el-row :gutter="24" style="margin-bottom: 8px">
-      <el-col :span="7"
+      <el-col :span="24"
         ><div class="props-item-label">{{ schemaCurrent[key].title }}</div></el-col
       >
-      <el-col :span="17"
+      <el-col :span="24"
         ><el-input
           v-if="schemaCurrent[key].type === 'INPUT'"
           v-model="schemaCurrent[key].value"

@@ -70,6 +70,7 @@ const handleClick = async (event: IEvent) => {
   }
 }
 const handleChange = (value: string, editor: any) => {
+  console.log(value)
   editor.showHint()
 }
 </script>

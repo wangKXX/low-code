@@ -20,6 +20,7 @@
         <el-col :span="6">水平</el-col>
         <el-col :span="18"
           ><el-radio-group size="small" @change="handleRadioChange" v-model="justify">
+            <el-radio-button label="default">默认</el-radio-button>
             <el-radio-button label="flex justify-start">左对齐</el-radio-button>
             <el-radio-button label="flex justify-end">右对齐</el-radio-button>
             <el-radio-button label="flex justify-center">居中</el-radio-button>
@@ -32,6 +33,7 @@
         <el-col :span="6">垂直</el-col>
         <el-col :span="18"
           ><el-radio-group size="small" @change="handleRadioChange" v-model="items">
+            <el-radio-button label="default">默认</el-radio-button>
             <el-radio-button label="flex items-center">居中</el-radio-button>
             <el-radio-button label="flex items-start">上对齐</el-radio-button>
             <el-radio-button label="flex items-end">下对齐</el-radio-button>
@@ -41,11 +43,12 @@
         >
       </el-row>
     </el-card>
+    <SheetBackgroundEditer :sheets="component.sheets"></SheetBackgroundEditer>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, nextTick } from 'vue'
+import { ref, onMounted, nextTick, toRefs, watch } from 'vue'
 // @ts-ignore
 import Codemirror from 'codemirror-editor-vue3'
 import 'codemirror/addon/display/placeholder.js'
@@ -55,17 +58,29 @@ import 'codemirror/addon/hint/css-hint.js'
 import 'codemirror/mode/css/css.js'
 import 'codemirror/theme/dracula.css'
 import type { IComponent } from '@/stores'
+import SheetBackgroundEditer from './SheetBackgroundEditer.vue'
 
 const emit = defineEmits<{
   code: [code: string]
 }>()
-const { component } = defineProps<{ component: IComponent }>()
-const justify = ref('')
-const items = ref('')
-const code = ref(`{
+const props = defineProps<{ component: IComponent }>()
+const { component } = toRefs(props)
+const parseClassName = (tag: string) =>
+  component.value.sheets?.className.split(' ').find((str: string) => str.startsWith(tag)) || ''
+const justify = ref(parseClassName('justify') ? `flex ${parseClassName('justify')}` : 'default')
+const items = ref(parseClassName('items') ? `flex ${parseClassName('items')}` : 'default')
+const code = ref(
+  component.value.sheets?.inlineSheets ||
+    `{
 
 }
-`)
+`
+)
+watch(component.value, () => {
+  code.value = component.value.sheets?.inlineSheets || `{
+
+  }`
+})
 const handleChange = (value: string, editor: any) => {
   editor.showHint()
 }
@@ -87,13 +102,16 @@ onMounted(async () => {
 })
 
 const handleRadioChange = (args: any) => {
-  component.sheets ||= { inlineSheets: '', className: '' }
-  component.sheets.className = `${justify.value} ${items.value.replace('flex', '')}`
+  component.value.sheets ||= { inlineSheets: '', className: '' }
+  component.value.sheets.className = `${justify.value} ${items.value.replace('flex', '')}`
 }
 </script>
 <style lang="less" scoped>
 :deep(.el-card__header) {
   padding: 10px;
   background-color: #e4e7ed;
+  .el-col-6 {
+    line-height: 38px;
+  }
 }
 </style>

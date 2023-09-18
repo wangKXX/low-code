@@ -39,7 +39,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, toRefs } from 'vue'
+import { isRef, ref, toRefs, watch } from 'vue'
 import type { IComponent } from '@/stores'
 import { v4 as uuidv4 } from 'uuid'
 import type { IChangeComponent } from '@/components/types'
@@ -53,15 +53,18 @@ const props = defineProps<{
 const { mateData, globalPageData, preview } = toRefs(props)
 const componentIndex = ref<number>(-2)
 const clearSelectComponentSheet = ref<() => void>()
-let globalPageMateData = globalPageData
+const globalPageMateData = ref<IComponent>(globalPageData.value)
+mateData.value.children ||= []
 let moveComponentParentMateData = mateData.value.children
-
+watch(mateData.value, () => {
+  moveComponentParentMateData = mateData.value.children
+}, {
+  deep: true
+})
 const isInArrayMiddle = () => {
   return componentIndex.value >= 0 && moveComponentParentMateData.length > componentIndex.value
 }
 const handleDrop = (event: DragEvent): void => {
-  mateData.value.children ||= []
-  moveComponentParentMateData ||= mateData.value.children
   const componentMateDataStr: string = event.dataTransfer?.getData('componentMateData') || ''
   try {
     const componentMateData: IComponent = JSON.parse(componentMateDataStr)
@@ -72,6 +75,7 @@ const handleDrop = (event: DragEvent): void => {
       moveComponentParentMateData.splice(componentIndex.value, 0, componentMateData as any)
     } else {
       moveComponentParentMateData.push(componentMateData as any)
+      console.log(moveComponentParentMateData)
     }
     componentIndex.value = -2
     clearSelectComponentSheet.value && clearSelectComponentSheet.value()
@@ -105,6 +109,9 @@ const changeComponent = (payload: IChangeComponent) => {
   }
   &.preview {
     border: none;
+  }
+  .engine-container-item {
+   overflow: hidden;
   }
 }
 </style>

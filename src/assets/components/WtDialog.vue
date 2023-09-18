@@ -20,7 +20,7 @@
 import { ref, toRefs } from 'vue'
 import WContent from './WtContent.vue'
 import type { IComponent, IEvent } from '@/stores'
-import { dispatchEvent } from '@/utils/functionHeler';
+import { dispatchEvent } from '@/utils/functionHelper';
 interface IWDialog {
   confirmTxt?: string
   cancelTxt?: string

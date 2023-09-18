@@ -33,7 +33,7 @@ export interface IComponent {
   icon: string
   componentId?: string
   schema: ISchema
-  sheets?: ISheets
+  sheets: ISheets
   events?: IEvent[]
   children: Array<IComponent>
 }
@@ -45,142 +45,185 @@ export enum EPropSetting {
   CHECKBOX = 'CHECKBOX'
 }
 
-export const useComponents = defineStore('components', () => {
-  const components = [
-    {
-      componentName: 'WtTable',
-      package: 'element-plus/lib/WtTable',
-      version: '1.0.0',
-      exportName: 'WtTable',
-      type: 'BASE',
-      showName: '表格',
-      icon: 'Grid',
-      schema: {
-        columns: {
-          type: 'LIST',
-          title: '数据列',
-          value: [
-            {
-              prop: 'key',
-              label: '数据列'
-            }
-          ]
+export const useComponents = defineStore(
+  'components',
+  () => {
+    const components = [
+      {
+        componentName: 'WtTable',
+        package: 'element-plus/lib/WtTable',
+        version: '1.0.0',
+        exportName: 'WtTable',
+        type: 'BASE',
+        showName: '表格',
+        icon: 'Grid',
+        schema: {
+          columns: {
+            type: 'LIST',
+            title: '数据列',
+            value: [
+              {
+                prop: 'key1',
+                label: '数据列',
+                hideInSearch: false,
+                type: '',
+                valueEnmu: []
+              },
+              {
+                prop: 'key2',
+                label: '数据列',
+                hideInSearch: false,
+                type: '',
+                valueEnmu: []
+              },
+              {
+                prop: 'key3',
+                label: '数据列',
+                hideInSearch: false,
+                type: '',
+                valueEnmu: []
+              },
+              {
+                prop: 'key4',
+                label: '数据列',
+                hideInSearch: false,
+                type: '',
+                valueEnmu: []
+              },
+              {
+                prop: 'key5',
+                label: '数据列',
+                hideInSearch: false,
+                type: '',
+                valueEnmu: []
+              }
+            ]
+          },
+          action: {
+            type: 'INPUT',
+            value: '',
+            title: '请求地址'
+          },
+          method: {
+            type: 'SELECT',
+            options: ['GET', 'POST'],
+            value: 'GET',
+            title: '请求类型'
+          },
+          border: {
+            title: '边框',
+            type: 'CHECKBOX',
+            value: false
+          },
+          stripe: {
+            title: '斑马条纹',
+            type: 'CHECKBOX',
+            value: false
+          }
         },
-        action: {
-          type: 'INPUT',
-          value: '',
-          title: '请求地址'
-        },
-        method: {
-          type: 'SELECT',
-          options: ['GET', 'POST'],
-          value: 'GET',
-          title: '请求类型'
+        events: [
+          { eventType: 'onClick', defaultValue: ``, description: '点击时触发', ES5Value: '' }
+        ],
+        sheets: {
+          inlineSheets: '',
+          className: ''
         }
       },
-      events: [
-        { eventType: 'onClick', defaultValue: ``, description: '点击时触发', ES5Value: ''}
-      ],
-      sheets: {
-        inlineSheets: '',
-        className: ''
-      }
-    },
-    {
-      componentName: 'WtButton',
-      package: 'element-plus/lib/WtButton',
-      version: '1.0.0',
-      exportName: 'WtButton',
-      type: 'BASE',
-      showName: '按钮',
-      icon: 'Watch',
-      events: [
-        { eventType: 'onClick', defaultValue: ``, description: '点击时触发', ES5Value: ''}
-      ],
-      sheets: {
-        inlineSheets: '',
-        className: ''
-      },
-      schema: {
-        size: {
-          type: 'SELECT',
-          options: ['large', 'default', 'small'],
-          value: 'default',
-          title: '尺寸'
+      {
+        componentName: 'WtButton',
+        package: 'element-plus/lib/WtButton',
+        version: '1.0.0',
+        exportName: 'WtButton',
+        type: 'BASE',
+        showName: '按钮',
+        icon: 'Watch',
+        events: [
+          { eventType: 'onClick', defaultValue: ``, description: '点击时触发', ES5Value: '' }
+        ],
+        sheets: {
+          inlineSheets: '',
+          className: ''
         },
-        type: {
-          type: 'SELECT',
-          options: ['primary', 'success', 'warning', 'danger', 'info'],
-          value: 'success',
-          title: '类型'
-        },
-        plain: {
-          type: 'CHECKBOX',
-          value: false,
-          title: '朴素按钮'
-        },
-        content: {
-          type: 'INPUT',
-          value: '按钮',
-          title: '内容'
+        schema: {
+          size: {
+            type: 'SELECT',
+            options: ['large', 'default', 'small', 'normal'],
+            value: 'default',
+            title: '尺寸'
+          },
+          type: {
+            type: 'SELECT',
+            options: ['primary', 'success', 'warning', 'danger', 'info'],
+            value: 'success',
+            title: '类型'
+          },
+          plain: {
+            type: 'CHECKBOX',
+            value: false,
+            title: '朴素按钮'
+          },
+          content: {
+            type: 'INPUT',
+            value: '按钮',
+            title: '内容'
+          }
         }
-      }
-    },
-    {
-      componentName: 'WtContent',
-      package: 'element-plus/lib/WtContent',
-      version: '1.0.0',
-      exportName: 'WtContent',
-      type: 'LAYOUT',
-      showName: '布局',
-      icon: 'Memo',
-      schema: {},
-      sheets: {
-        inlineSheets: '',
-        className: ''
-      }
-    },
-    {
-      componentName: 'WtDialog',
-      package: 'element-plus/lib/WtDialog',
-      version: '1.0.0',
-      exportName: 'WtDialog',
-      type: 'LAYOUT',
-      showName: '弹框',
-      icon: 'Memo',
-      schema: {
-        confirmTxt: {
-          type: 'INPUT',
-          title: '确认文案',
-          value: 'Confirm'
-        },
-        cancelTxt: {
-          type: 'INPUT',
-          title: '取消文案',
-          value: 'Cancel'
-        },
-        title: {
-          type: 'INPUT',
-          title: '标题',
-          value: 'Tips'
-        },
-        width: {
-          type: 'INPUT',
-          title: '宽度',
-          value: '30%'
-        },
       },
-      sheets: {
-        inlineSheets: '',
-        className: ''
+      {
+        componentName: 'WtContent',
+        package: 'element-plus/lib/WtContent',
+        version: '1.0.0',
+        exportName: 'WtContent',
+        type: 'LAYOUT',
+        showName: '布局',
+        icon: 'Memo',
+        schema: {},
+        sheets: {
+          inlineSheets: '',
+          className: ''
+        }
       },
-      events: [
-        { eventType: 'beforeClose', description: '关闭前触发'}
-      ],
+      {
+        componentName: 'WtDialog',
+        package: 'element-plus/lib/WtDialog',
+        version: '1.0.0',
+        exportName: 'WtDialog',
+        type: 'LAYOUT',
+        showName: '弹框',
+        icon: 'Memo',
+        schema: {
+          confirmTxt: {
+            type: 'INPUT',
+            title: '确认文案',
+            value: 'Confirm'
+          },
+          cancelTxt: {
+            type: 'INPUT',
+            title: '取消文案',
+            value: 'Cancel'
+          },
+          title: {
+            type: 'INPUT',
+            title: '标题',
+            value: 'Tips'
+          },
+          width: {
+            type: 'INPUT',
+            title: '宽度',
+            value: '30%'
+          }
+        },
+        sheets: {
+          inlineSheets: '',
+          className: ''
+        },
+        events: [{ eventType: 'beforeClose', description: '关闭前触发' }]
+      }
+    ]
+    const reactiveComponents = ref<Omit<IComponent, 'children'>[]>(components)
+    return {
+      components: reactiveComponents.value
     }
-  ]
-  const reactiveComponents = ref<Omit<IComponent, 'children'>[]>(components)
-  return {
-    components: reactiveComponents.value
-  }
-}, { persist: true })
+  },
+  { persist: true }
+)

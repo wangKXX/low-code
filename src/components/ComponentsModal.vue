@@ -8,25 +8,52 @@
       size="100%"
       modal-class="component-drawer"
     >
-      <div class="components-container">
-        <div
-          class="component-item"
-          v-for="(component, index) in components"
-          :key="`component-item-${index}`"
-          @dragstart="dragstart($event, component)"
-          @dragend="dragend()"
-          draggable="true"
-        >
-          <span class="component-name">{{ component.showName }}</span>
-          <Icon :icon="component.icon"></Icon>
+      <el-card class="box-card">
+        <template #header>
+          <div class="card-header">
+            <span>基础组件</span>
+          </div>
+        </template>
+        <div class="components-container">
+          <div
+            class="component-item"
+            v-for="(component, index) in baseComponent"
+            :key="`component-item-${index}`"
+            @dragstart="dragstart($event, component)"
+            @dragend="dragend()"
+            draggable="true"
+          >
+            <span class="component-name">{{ component.showName }}</span>
+            <Icon :icon="component.icon"></Icon>
+          </div>
         </div>
-      </div>
+      </el-card>
+      <el-card class="box-card">
+        <template #header>
+          <div class="card-header">
+            <span>布局组件</span>
+          </div>
+        </template>
+        <div class="components-container">
+          <div
+            class="component-item"
+            v-for="(component, index) in layoutComponent"
+            :key="`component-item-${index}`"
+            @dragstart="dragstart($event, component)"
+            @dragend="dragend()"
+            draggable="true"
+          >
+            <span class="component-name">{{ component.showName }}</span>
+            <Icon :icon="component.icon"></Icon>
+          </div>
+        </div>
+      </el-card>
     </el-drawer>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useComponents } from '@/stores'
 import type { IComponent } from '@/stores'
 import Icon from './Icon.vue'
@@ -37,6 +64,13 @@ defineProps({
 
 const { components } = useComponents()
 
+const baseComponent = computed(() => {
+  return components.filter(({ type }) => type === 'BASE')
+})
+
+const layoutComponent = computed(() => {
+  return components.filter(({ type }) => type === 'LAYOUT')
+})
 const drawer = ref(false)
 const tiggerDrawer = () => {
   drawer.value = !drawer.value
@@ -59,14 +93,25 @@ defineExpose({
 </script>
 
 <style lang="less" scoped>
+:deep(.el-card__header) {
+  padding: 10px;
+  background-color: #e4e7ed;
+  font-size: 14px;
+}
 :deep(.component-drawer) {
   width: 300px;
   position: absolute !important;
   left: 60px !important;
-  .el-drawer{
-    box-shadow: none;
+  .el-card__body{
+    padding: 10px;
   }
-  .el-drawer__header{
+  .el-drawer {
+    box-shadow: none;
+    .el-drawer__body{
+      padding: 0;
+    }
+  }
+  .el-drawer__header {
     margin-bottom: 0;
   }
   .components-container {

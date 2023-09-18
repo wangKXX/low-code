@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 import type { IEvent } from '@/stores'
-import { dispatchEvent } from '@/utils/functionHeler'
+import { dispatchEvent } from '@/utils/functionHelper'
 enum ESize {
   large = 'large',
   default = 'default',

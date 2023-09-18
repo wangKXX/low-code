@@ -65,14 +65,3 @@ export const globalRemoveComponentById = (id: string, pageTree: IComponent[]): b
   }
   return ret
 }
-
-// css字符串转换
-export const parseCssCode = (str?: string): { [propName: string]: string } => {
-  str ||= ''
-  str = str.replace(/{/g, '').replace(/}/g, '').replace(/\n/g, '')
-  return str.split(';').reduce((prev: { [propName: string]: string }, curr) => {
-    const [key, value] = curr.split(':')
-    if (key && value) prev[key] = value
-    return prev
-  }, {})
-}

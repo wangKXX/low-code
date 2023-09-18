@@ -63,8 +63,8 @@ import { storeToRefs } from 'pinia'
 import { computed, ref, onMounted, toRefs } from 'vue'
 import { EPositon } from './types'
 import type { IChangeComponent } from './types'
-import { findComponentIndex, parseCssCode } from '@/utils/common'
-
+import { findComponentIndex } from '@/utils/common'
+import { parseCssCode } from '@/utils/sheetsHelper'
 
 interface IComponentWrapper {
   componentName: string
@@ -79,8 +79,7 @@ interface IEventMap {
 }
 const componentInstance = ref<any>()
 window.globalRefs ||= {}
-const props =
-  defineProps<IComponentWrapper>()
+const props = defineProps<IComponentWrapper>()
 const { componentName, mateData, parentMateData, globalPageData, preview } = toRefs(props)
 const { setCurrentComponentId } = useCurrentComponent()
 onMounted(() => {
@@ -136,7 +135,10 @@ const styleSheets = computed(() => {
 })
 
 const isBottomComponent = computed(() => {
-  return findComponentIndex(currentComponentId.value, parentMateData.value) !== parentMateData.value.length - 1
+  return (
+    findComponentIndex(currentComponentId.value, parentMateData.value) !==
+    parentMateData.value.length - 1
+  )
 })
 
 const className = ref<string>('')
@@ -180,7 +182,7 @@ const handleDragover = (event: any) => {
 }
 
 const dragstart = (event: DragEvent) => {
-  event.dataTransfer?.setData('componentMateData', JSON.stringify(mateData))
+  event.dataTransfer?.setData('componentMateData', JSON.stringify(mateData.value))
 }
 </script>
 
@@ -208,7 +210,7 @@ const dragstart = (event: DragEvent) => {
   }
   .active-menu {
     position: absolute;
-    bottom: -34px;
+    top: 0;
     right: -1px;
     padding: 4px;
     z-index: 2;

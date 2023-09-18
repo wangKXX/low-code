@@ -2,14 +2,14 @@
   <div v-if="!currentComponentId" class="props-setting-tips">请在左侧画布选中节点</div>
   <div class="props-setting" v-else :key="currentComponentId" @click="handlerClick">
     <el-collapse v-model="activeNames">
-      <el-collapse-item title="属性" name="1" v-if="Object.keys(current.schema).length">
+      <el-collapse-item title="属性" name="1" v-if="Object.keys(current?.schema || {}).length">
         <ComponentPropsEidtor :schemaCurrent="current.schema || {}"></ComponentPropsEidtor>
-      </el-collapse-item>
-      <el-collapse-item title="事件" name="2" v-if="current.events">
-        <ComponentEventEditor :component="current"></ComponentEventEditor>
       </el-collapse-item>
       <el-collapse-item title="样式" name="3">
         <ComponentSheetsEditer @code="saveSheetsCode" :component="current"></ComponentSheetsEditer>
+      </el-collapse-item>
+      <el-collapse-item title="事件" name="2" v-if="current.events">
+        <ComponentEventEditor :component="current"></ComponentEventEditor>
       </el-collapse-item>
       <el-collapse-item title="高级" name="4">
         <el-row :gutter="24" style="margin-bottom: 8px">
