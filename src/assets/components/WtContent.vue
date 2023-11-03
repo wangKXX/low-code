@@ -39,7 +39,7 @@
 </template>
 
 <script setup lang="ts">
-import { isRef, ref, toRefs, watch } from 'vue'
+import { ref, toRefs, watch } from 'vue'
 import type { IComponent } from '@/stores'
 import { v4 as uuidv4 } from 'uuid'
 import type { IChangeComponent } from '@/components/types'

@@ -1,50 +1,50 @@
 <template>
-  <el-form :inline="false" :model="formInline" class="form-inline" :label-position="'top'">
-    <el-row :gutter="10" align="middle" justify="center">
-      <template v-for="(column, index) in searchColumns">
-        <el-col
-          :span="6"
-          :key="`inline-from-${index}`"
-          v-if="index < searchColumnNum - 1 || isOpen"
-        >
-          <el-form-item :label="column.label" v-if="column?.type === 'date'">
-            <el-date-picker v-model="formInline[column.prop]" placeholder="请选择" clearable />
-          </el-form-item>
-          <el-form-item
-            :label="column.label"
-            v-else-if="column.valueEnmu && column?.type === 'select'"
+  <div class="w-table">
+    <el-form :inline="false" :model="formInline" class="form-inline" :label-position="'top'">
+      <el-row :gutter="10" align="middle" justify="center">
+        <template v-for="(column, index) in searchColumns">
+          <el-col
+            :span="6"
+            :key="`inline-from-${index}`"
+            v-if="index < searchColumnNum - 1 || isOpen"
           >
-            <el-select v-model="formInline[column.prop]" placeholder="请选择" clearable>
-              <el-option
-                v-for="item in column.valueEnmu"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              >
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item :label="column.label" v-else>
-            <el-input v-model="formInline[column.prop]" placeholder="请输入" clearable />
+            <el-form-item :label="column.label" v-if="column?.type === 'date'">
+              <el-date-picker v-model="formInline[column.prop]" placeholder="请选择" clearable />
+            </el-form-item>
+            <el-form-item
+              :label="column.label"
+              v-else-if="column.valueEnmu && column?.type === 'select'"
+            >
+              <el-select v-model="formInline[column.prop]" placeholder="请选择" clearable>
+                <el-option
+                  v-for="item in column.valueEnmu"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item :label="column.label" v-else>
+              <el-input v-model="formInline[column.prop]" placeholder="请输入" clearable />
+            </el-form-item>
+          </el-col>
+        </template>
+        <el-col :span="6" :offset="offset">
+          <el-form-item class="action-item">
+            <el-button @click="onRest">重置</el-button>
+            <el-button type="primary" @click="onSubmit">查询</el-button>
+            <el-button
+              @click="isOpen = !isOpen"
+              v-if="searchColumns.length > searchColumnNum - 1"
+              :icon="isOpen ? ArrowUp : ArrowDown"
+              type="text"
+              >{{ isOpen ? '收起' : '展开' }}</el-button
+            >
           </el-form-item>
         </el-col>
-      </template>
-      <el-col :span="6" :offset="offset">
-        <el-form-item class="action-item">
-          <el-button @click="onRest">重置</el-button>
-          <el-button type="primary" @click="onSubmit">查询</el-button>
-          <el-button
-            @click="isOpen = !isOpen"
-            v-if="searchColumns.length > searchColumnNum - 1"
-            :icon="isOpen ? ArrowUp : ArrowDown"
-            type="text"
-            >{{ isOpen ? '收起' : '展开' }}</el-button
-          >
-        </el-form-item>
-      </el-col>
-    </el-row>
-  </el-form>
-  <div class="w-table">
+      </el-row>
+    </el-form>
     <el-table :data="tableData" v-bind="props">
       <el-table-column
         :label="column.label"

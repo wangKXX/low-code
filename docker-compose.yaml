@@ -1,0 +1,11 @@
+version: "3"
+services: 
+  nginx:
+    container_name: webapp
+    image: nginx
+    restart: always
+    ports:
+      - 8888:8888
+    volumes:
+      - ./dist/:/usr/share/nginx/html/
+      - ./nginx/:/etc/nginx/conf.d/

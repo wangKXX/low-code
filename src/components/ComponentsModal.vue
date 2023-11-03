@@ -95,13 +95,19 @@ defineExpose({
 <style lang="less" scoped>
 :deep(.el-card__header) {
   padding: 10px;
-  background-color: #e4e7ed;
   font-size: 14px;
 }
 :deep(.component-drawer) {
   width: 300px;
   position: absolute !important;
   left: 60px !important;
+  .el-card{
+    margin-bottom: 4px;
+  }
+  .el-card.is-always-shadow{
+    box-shadow: none;
+    border-radius: 0
+  }
   .el-card__body{
     padding: 10px;
   }
@@ -121,7 +127,7 @@ defineExpose({
     grid-row-gap: 8px;
 
     .component-item {
-      width: 50px;
+      width: 100%;
       height: 50px;
       border: 1px solid #e8e8e8;
       border-radius: 4px;
