@@ -5,7 +5,7 @@ services:
     image: nginx
     restart: always
     ports:
-      - 8888:8888
+      - 7091:7091
     volumes:
-      - ./dist/:/usr/share/nginx/html/
+      - ./dist/:/html/gbf-portal-web/dist/
       - ./nginx/:/etc/nginx/conf.d/
